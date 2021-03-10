@@ -1,4 +1,0 @@
-this is my first time using git
-and now for the second trial, i update this message:hello, world.
-and now my third trial
-how to use git professionally

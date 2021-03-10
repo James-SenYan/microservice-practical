@@ -1,0 +1,233 @@
+package com.baicizhan.nocturne.common.core.utils;
+
+import static com.baicizhan.nocturne.common.core.result.CommonResultCode.COMMON_ERROR;
+
+import com.baicizhan.nocturne.common.core.exceptions.BusinessException;
+import com.baicizhan.nocturne.common.core.result.ResultCode;
+import java.util.Collection;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.helpers.FormattingTuple;
+import org.slf4j.helpers.MessageFormatter;
+
+/**
+ * @Author leiqian
+ * @Description
+ * @Date Created on 2020/7/26
+ * @Version 1.0
+ */
+@Slf4j
+public class AssertUtils {
+
+    private static final String SHOULD_NOT_NULL_EX_MESSAGE = "The validated object is null";
+    private static final String SHOULD_BE_NULL_EX_MESSAGE = "The validated object is not null";
+    private static final String SHOULD_BE_TRUE_EX_MESSAGE = "The validated expression not true";
+    private static final String SHOULD_BE_FALSE_EX_MESSAGE = "The validated expression not false";
+    private static final String SHOULD_NOT_EMPTY_COLLECTION_EX_MESSAGE = "The validated collection is empty";
+    private static final String SHOULD_NOT_EMPTY_MAP_EX_MESSAGE = "The validated map is empty";
+    private static final String SHOULD_NOT_BLANK_EX_MESSAGE = "The validated character sequence is blank";
+
+    /**
+     * 断言目标对象不会为null
+     *
+     * @param object 目标对象
+     * @param <T>    泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T> void notNull(final T object) {
+        notNull(object, COMMON_ERROR, SHOULD_NOT_NULL_EX_MESSAGE);
+    }
+
+    /**
+     * 断言目标对象不会为null
+     *
+     * @param object     目标对象
+     * @param resultCode 自定义返回码枚举
+     * @param message    格式化错误消息模式
+     * @param values     格式化消息书输入参数
+     * @param <T>        泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T> void notNull(final T object, final ResultCode resultCode, final String message,
+        final Object... values) {
+        isFalse(object == null, resultCode, message, values);
+    }
+
+    /**
+     * 断言目标对象会为null
+     *
+     * @param object 目标对象
+     * @param <T>    泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T> void isNull(final T object) {
+        isNull(object, COMMON_ERROR, SHOULD_BE_NULL_EX_MESSAGE);
+    }
+
+    /**
+     * 断言目标对象会为null
+     *
+     * @param object     目标对象
+     * @param resultCode 自定义返回码枚举
+     * @param message    格式化错误消息模式
+     * @param values     格式化消息书输入参数
+     * @param <T>        泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T> void isNull(final T object, final ResultCode resultCode, final String message,
+        final Object... values) {
+        isTrue(object == null, resultCode, message, values);
+    }
+
+    /**
+     * 断言目标集合不为空
+     *
+     * @param collection 目标集合
+     * @param <T>        泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T extends Collection<?>> void notEmpty(final T collection) {
+        notEmpty(collection, COMMON_ERROR, SHOULD_NOT_EMPTY_COLLECTION_EX_MESSAGE);
+    }
+
+    /**
+     * 断言目标集合不为空
+     *
+     * @param collection 目标集合
+     * @param resultCode 自定义返回码枚举
+     * @param message    格式化错误消息模式
+     * @param values     格式化消息书输入参数
+     * @param <T>        泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T extends Collection<?>> void notEmpty(final T collection, final ResultCode resultCode,
+        final String message, final Object... values) {
+        isTrue(CollectionUtils.isNotEmpty(collection), resultCode, message, values);
+    }
+
+    /**
+     * 断言目标map不为空
+     *
+     * @param map 目标map
+     * @param <T> 泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T extends Map<?, ?>> void notEmpty(final T map) {
+        notEmpty(map, COMMON_ERROR, SHOULD_NOT_EMPTY_MAP_EX_MESSAGE);
+    }
+
+    /**
+     * 断言目标map不为空
+     *
+     * @param map        目标map
+     * @param resultCode 自定义返回码枚举
+     * @param message    格式化错误消息模式
+     * @param values     格式化消息书输入参数
+     * @param <T>        泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T extends Map<?, ?>> void notEmpty(final T map, final ResultCode resultCode, final String message,
+        final Object... values) {
+        isTrue(MapUtils.isNotEmpty(map), resultCode, message, values);
+    }
+
+    /**
+     * 断言目标字符串不为空
+     *
+     * @param chars 目标字符串
+     * @param <T>   泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T extends CharSequence> void notBlank(final T chars) {
+        notBlank(chars, COMMON_ERROR, SHOULD_NOT_BLANK_EX_MESSAGE);
+    }
+
+    /**
+     * 断言目标字符串不为空
+     *
+     * @param chars      目标字符串
+     * @param resultCode 自定义返回码枚举
+     * @param message    格式化错误消息模式
+     * @param values     格式化消息书输入参数
+     * @param <T>        泛型参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T extends CharSequence> void notBlank(final T chars, final ResultCode resultCode,
+        final String message, final Object... values) {
+        isTrue(StringUtils.isNotBlank(chars), resultCode, message, values);
+    }
+
+    /**
+     * 断言表达式结果为false
+     *
+     * @param expression 目标表达式
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T> void isFalse(final boolean expression) {
+        isFalse(expression, COMMON_ERROR, SHOULD_BE_FALSE_EX_MESSAGE);
+    }
+
+    /**
+     * 断言表达式结果为false
+     *
+     * @param expression 目标表达式
+     * @param resultCode 自定义返回码枚举
+     * @param message    格式化错误消息模式
+     * @param values     格式化消息书输入参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static void isFalse(final boolean expression, final ResultCode resultCode, final String message,
+        final Object... values) {
+        isTrue(!expression, resultCode, message, values);
+    }
+
+    /**
+     * 断言表达式结果为true
+     *
+     * @param expression 目标表达式
+     * @throws BusinessException 自定义业务异常
+     */
+    public static <T> void isTrue(final boolean expression) {
+        isTrue(expression, COMMON_ERROR, SHOULD_BE_TRUE_EX_MESSAGE);
+    }
+
+    /**
+     * 断言表达式结果为true
+     *
+     * @param expression 目标表达式
+     * @param resultCode 自定义返回码枚举
+     * @param message    格式化错误消息模式
+     * @param values     格式化消息书输入参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static void isTrue(final boolean expression, final ResultCode resultCode, final String message,
+        final Object... values) {
+        if (!expression) {
+            LogUtil.error(log, message, values);
+            throw new BusinessException(resultCode);
+        }
+    }
+
+    /**
+     * 断言表达式结果为true
+     *
+     * @param expression 目标表达式
+     * @param resultCode 自定义返回码int
+     * @param message    格式化错误消息模式
+     * @param values     格式化消息书输入参数
+     * @throws BusinessException 自定义业务异常
+     */
+    public static void isTrue(final boolean expression, final int resultCode, final String message,
+        final Object... values) {
+        if (!expression) {
+            LogUtil.error(log, message, values);
+
+            FormattingTuple ft = MessageFormatter.arrayFormat(message, values);
+            throw new BusinessException(resultCode, ft.getMessage());
+        }
+    }
+
+}
